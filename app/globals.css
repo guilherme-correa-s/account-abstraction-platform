@@ -1,0 +1,185 @@
+@import "tailwindcss";
+
+/* ===========================================================================
+   Design tokens — from design_handoff_aa_platform/README.md
+   Clean fintech: light, neutral, accent purple, monospace for numeric/hash.
+   =========================================================================== */
+:root {
+  /* Brand */
+  --brand: #6e56cf; /* primary buttons, active nav, logo, links, focus ring */
+  --brand-hover: #5b46b0;
+  --brand-soft: #ece9f9; /* step chips, swap-icon circle bg */
+
+  /* Surfaces & text */
+  --page-bg: #f6f6f4;
+  --surface: #ffffff;
+  --field-bg: #fcfcfb;
+  --text-primary: #18181b;
+  --text-secondary: #52525b;
+  --text-muted: #71717a;
+  --text-subtle: #a1a1aa;
+
+  /* Status — success */
+  --success: #16a34a;
+  --success-foreground: #15803d;
+  --success-bg: #f0f7f2;
+  --success-border: #d7ecdf;
+
+  /* Status — danger */
+  --danger: #dc2626;
+  --danger-foreground: #991b1b;
+  --danger-bg: #fdf2f2;
+  --danger-border: #f6cccc;
+
+  /* Cross-chain info (Relay) */
+  --info: #1e40af;
+  --info-bg: #eef4ff;
+  --info-border: #d4e2fb;
+
+  /* Dark surface (private-key box, toast) */
+  --surface-dark: #18181b;
+
+  /* Token brand colors (asset avatars) */
+  --token-usdc: #2775ca;
+  --token-pol: #8247e5;
+  --token-weth: #627eea;
+  --token-dai: #f5ac37;
+
+  /* shadcn/ui semantic tokens mapped onto the design palette */
+  --background: var(--page-bg);
+  --foreground: var(--text-primary);
+  --card: var(--surface);
+  --card-foreground: var(--text-primary);
+  --popover: var(--surface);
+  --popover-foreground: var(--text-primary);
+  --primary: var(--brand);
+  --primary-foreground: #ffffff;
+  --secondary: #f4f4f5;
+  --secondary-foreground: var(--text-primary);
+  --muted: var(--page-bg);
+  --muted-foreground: var(--text-muted);
+  --accent: #f4f4f5; /* shadcn "accent" = subtle hover bg (not the brand) */
+  --accent-foreground: var(--text-primary);
+  --destructive: var(--danger);
+  --destructive-foreground: #ffffff;
+  --border: #ebebe8; /* card hairline */
+  --input: #e4e4e7; /* input border */
+  --ring: var(--brand);
+  --radius: 0.75rem;
+}
+
+/* ===========================================================================
+   Expose tokens to Tailwind v4 utilities (bg-brand, text-success, font-mono…)
+   =========================================================================== */
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  /* Design-specific colors */
+  --color-brand: var(--brand);
+  --color-brand-hover: var(--brand-hover);
+  --color-brand-soft: var(--brand-soft);
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-bg: var(--success-bg);
+  --color-success-border: var(--success-border);
+  --color-danger: var(--danger);
+  --color-danger-foreground: var(--danger-foreground);
+  --color-danger-bg: var(--danger-bg);
+  --color-danger-border: var(--danger-border);
+  --color-info: var(--info);
+  --color-info-bg: var(--info-bg);
+  --color-info-border: var(--info-border);
+  --color-surface-dark: var(--surface-dark);
+  --color-token-usdc: var(--token-usdc);
+  --color-token-pol: var(--token-pol);
+  --color-token-weth: var(--token-weth);
+  --color-token-dai: var(--token-dai);
+
+  /* Fonts (variables injected by next/font in app/layout.tsx) */
+  --font-sans: var(--font-plex-sans);
+  --font-mono: var(--font-plex-mono);
+
+  /* Radii (cards 14–16, hero/modal 18, inputs/buttons 10–11, pills 7–9) */
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  /* Animations (keyframes below) */
+  --animate-fade-up: fadeUp 0.4s ease;
+  --animate-overlay-in: overlayIn 0.2s ease;
+  --animate-pop: pop 0.25s ease;
+  --animate-toast-in: toastIn 0.25s ease;
+
+  @keyframes fadeUp {
+    from {
+      opacity: 0;
+      transform: translateY(8px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes overlayIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+  @keyframes pop {
+    from {
+      opacity: 0;
+      transform: scale(0.96);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+  @keyframes toastIn {
+    from {
+      opacity: 0;
+      transform: translate(-50%, 12px);
+    }
+    to {
+      opacity: 1;
+      transform: translate(-50%, 0);
+    }
+  }
+}
+
+/* ===========================================================================
+   Base
+   =========================================================================== */
+@layer base {
+  * {
+    border-color: var(--border);
+  }
+  body {
+    background: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans), "IBM Plex Sans", system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+}
