@@ -182,4 +182,14 @@
     font-family: var(--font-sans), "IBM Plex Sans", system-ui, sans-serif;
     -webkit-font-smoothing: antialiased;
   }
+  /* Tailwind v4 drops the default pointer cursor on buttons — restore it for
+     all interactive elements. */
+  button:not(:disabled),
+  [role="button"]:not(:disabled),
+  a[href],
+  select:not(:disabled),
+  summary,
+  label[for] {
+    cursor: pointer;
+  }
 }

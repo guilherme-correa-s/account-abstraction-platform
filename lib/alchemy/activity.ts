@@ -1,4 +1,5 @@
 import { formatTokenAmount } from "@/lib/format";
+import { explorerTxUrl } from "@/lib/explorer";
 import { networkLabel } from "./portfolio";
 
 /**
@@ -13,6 +14,12 @@ import { networkLabel } from "./portfolio";
  * aliases both `matic-mainnet` and `polygon-mainnet` to the same Polygon RPC.
  */
 const ACTIVITY_NETWORKS = ["matic-mainnet", "base-mainnet"] as const;
+
+const NETWORK_CHAIN_ID: Record<string, number> = {
+  "matic-mainnet": 137,
+  "polygon-mainnet": 137,
+  "base-mainnet": 8453,
+};
 
 type RawTransfer = {
   hash: string;
@@ -36,6 +43,7 @@ export type ActivityItem = {
   timestamp: string | null;
   amount: string;
   positive: boolean;
+  explorerUrl: string | null;
 };
 
 const rpcUrl = (network: string, key: string) =>
@@ -145,6 +153,7 @@ function classifyNetwork(
       timestamp: g.ts,
       amount,
       positive,
+      explorerUrl: explorerTxUrl(NETWORK_CHAIN_ID[network], hash),
     });
   }
 

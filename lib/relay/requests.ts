@@ -1,4 +1,5 @@
 import { formatTokenAmount } from "@/lib/format";
+import { explorerTxUrl } from "@/lib/explorer";
 import type { ActivityItem } from "@/lib/alchemy/activity";
 
 // Relay's own transaction history (swaps/bridges), richer + already classified.
@@ -94,6 +95,7 @@ export async function fetchRelayRequests(
         timestamp,
         amount: outAmt > 0 ? `+${formatTokenAmount(outAmt)} ${outSym}` : outSym,
         positive: true,
+        explorerUrl: explorerTxUrl(inChain, hash),
       });
     }
   } catch {

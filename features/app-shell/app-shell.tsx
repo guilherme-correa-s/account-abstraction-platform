@@ -15,7 +15,7 @@ export function AppShell() {
     <>
       <Header active={tab} onSelect={setTab} />
       <main className="mx-auto max-w-[1040px] px-5 pb-[72px] pt-6">
-        {tab === "Dashboard" && <Dashboard />}
+        {tab === "Dashboard" && <Dashboard onNavigate={setTab} />}
         {tab === "Swap" && <SwapScreen />}
         {tab === "Transfer" && <TransferScreen />}
         {tab === "Batch" && <BatchScreen />}

@@ -4,6 +4,7 @@ import { useState } from "react";
 import { usePortfolio } from "@/hooks/use-portfolio";
 import { useActivity } from "@/hooks/use-activity";
 import { useAccountAddress } from "@/hooks/use-account-address";
+import type { Tab } from "@/features/app-shell/header";
 import {
   formatTokenAmount,
   formatUsd,
@@ -35,7 +36,7 @@ const ACTIVITY_ICON: Record<
   swap: { char: "⇄", bg: "#ece9f9", color: "#6E56CF" },
 };
 
-export function Dashboard() {
+export function Dashboard({ onNavigate }: { onNavigate?: (tab: Tab) => void }) {
   const address = useAccountAddress();
   const portfolio = usePortfolio(address);
   const activity = useActivity(address);
@@ -61,10 +62,16 @@ export function Dashboard() {
             Polygon
           </span>
           <div className="ml-auto flex gap-2">
-            <button className="rounded-[9px] bg-white/95 px-4 py-[9px] text-[13.5px] font-semibold text-brand hover:bg-white">
+            <button
+              onClick={() => onNavigate?.("Swap")}
+              className="rounded-[9px] bg-white/95 px-4 py-[9px] text-[13.5px] font-semibold text-brand hover:bg-white"
+            >
               Swap
             </button>
-            <button className="rounded-[9px] border border-white/30 bg-white/15 px-4 py-[9px] text-[13.5px] font-semibold text-white hover:bg-white/25">
+            <button
+              onClick={() => onNavigate?.("Transfer")}
+              className="rounded-[9px] border border-white/30 bg-white/15 px-4 py-[9px] text-[13.5px] font-semibold text-white hover:bg-white/25"
+            >
               Send
             </button>
           </div>
@@ -81,9 +88,7 @@ export function Dashboard() {
           <div>
             {portfolio.isLoading && <RowSkeletons />}
             {!portfolio.isLoading && portfolio.isError && (
-              <Empty
-                text={(portfolio.error as Error)?.message ?? "Couldn't load assets"}
-              />
+              <Empty text={(portfolio.error as Error)?.message ?? "Couldn't load assets"} />
             )}
             {!portfolio.isLoading && !portfolio.isError && holdings.length === 0 && (
               <Empty text="No priced assets yet" />
@@ -102,9 +107,7 @@ export function Dashboard() {
           <div>
             {activity.isLoading && <RowSkeletons />}
             {!activity.isLoading && activity.isError && (
-              <Empty
-                text={(activity.error as Error)?.message ?? "Couldn't load activity"}
-              />
+              <Empty text={(activity.error as Error)?.message ?? "Couldn't load activity"} />
             )}
             {!activity.isLoading && !activity.isError && items.length === 0 && (
               <Empty text="No activity yet" />
@@ -165,8 +168,11 @@ function AssetRow({ h }: { h: Holding }) {
 
 function ActivityRow({ a }: { a: ActivityItem }) {
   const icon = ACTIVITY_ICON[a.kind];
-  return (
-    <div className="flex items-center gap-3 border-b border-[#f6f6f4] px-[18px] py-[13px]">
+  const base =
+    "flex items-center gap-3 border-b border-[#f6f6f4] px-[18px] py-[13px]";
+
+  const inner = (
+    <>
       <span
         className="flex size-8 shrink-0 items-center justify-center rounded-[9px] text-sm font-bold"
         style={{ background: icon.bg, color: icon.color }}
@@ -188,8 +194,23 @@ function ActivityRow({ a }: { a: ActivityItem }) {
         </div>
         <div className="text-[11px] font-semibold text-success">Confirmed</div>
       </div>
-    </div>
+    </>
   );
+
+  if (a.explorerUrl) {
+    return (
+      <a
+        href={a.explorerUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        title="View on explorer"
+        className={`${base} transition-colors hover:bg-[#fafafa]`}
+      >
+        {inner}
+      </a>
+    );
+  }
+  return <div className={base}>{inner}</div>;
 }
 
 function Empty({ text }: { text: string }) {
