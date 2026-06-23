@@ -3,21 +3,28 @@
 import type { ReactNode } from "react";
 import { PrivyProvider } from "@privy-io/react-auth";
 import { defaultChain, supportedChains } from "@/config/chains";
+import { QueryProvider } from "./query-provider";
 
 const PRIVY_APP_ID = process.env.NEXT_PUBLIC_PRIVY_APP_ID;
+const PRIVY_CLIENT_ID = process.env.NEXT_PUBLIC_PRIVY_CLIENT_ID;
 
 /**
- * Client-only web3 providers. This is where Privy lives today; the Kernel
- * (EIP-7702) account client, Pimlico bundler/paymaster and Relay client get
- * wired in here (or in child providers/hooks) as screens are built.
+ * Client-only web3 providers. Privy + React Query live here today; the Kernel
+ * (EIP-7702) account client + Pimlico bundler/paymaster + Relay get layered in
+ * as screens are built (see ./smart-wallets and the Pimlico Privy-signer guide).
  *
- * Loaded via `next/dynamic` with `ssr: false` (see app/providers.tsx) so none
- * of this runs on the server, where `window` / `indexedDB` are unavailable.
- *
- * NOTE: verify the exact Privy config shape against the current
- * @privy-io/react-auth docs — these options move between versions.
+ * Loaded via `next/dynamic` with `ssr: false` (app/providers.tsx) so none of
+ * this runs on the server, where `window` / `indexedDB` are unavailable.
  */
 export function Web3Providers({ children }: { children: ReactNode }) {
+  return (
+    <QueryProvider>
+      <PrivyLayer>{children}</PrivyLayer>
+    </QueryProvider>
+  );
+}
+
+function PrivyLayer({ children }: { children: ReactNode }) {
   // Let the app boot during scaffolding before keys are set.
   if (!PRIVY_APP_ID) {
     if (typeof window !== "undefined") {
@@ -32,9 +39,12 @@ export function Web3Providers({ children }: { children: ReactNode }) {
   return (
     <PrivyProvider
       appId={PRIVY_APP_ID}
+      clientId={PRIVY_CLIENT_ID}
       config={{
         loginMethods: ["email", "google", "apple", "wallet"],
-        embeddedWallets: { createOnLogin: "users-without-wallets" },
+        embeddedWallets: {
+          ethereum: { createOnLogin: "users-without-wallets" },
+        },
         defaultChain,
         supportedChains,
         appearance: { theme: "light", accentColor: "#6E56CF" },
