@@ -83,7 +83,7 @@ export function TransferScreen() {
     if (disabled || (tx && tx.status === "pending")) return;
     setNote(null);
     if (!hasPimlicoKey()) {
-      setNote("Set NEXT_PUBLIC_PIMLICO_API_KEY in .env.local to execute (gasless).");
+      setNote("Set PIMLICO_API_KEY in .env.local to execute (gasless).");
       return;
     }
 

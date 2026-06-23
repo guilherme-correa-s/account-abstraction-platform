@@ -72,13 +72,13 @@ Copy `.env.example` → `.env.local` and fill in:
 | --- | --- | --- |
 | `NEXT_PUBLIC_PRIVY_APP_ID` | client | Privy auth / embedded wallet |
 | `NEXT_PUBLIC_PRIVY_CLIENT_ID` | client | Privy client |
-| `NEXT_PUBLIC_PIMLICO_API_KEY` | client | Pimlico bundler + paymaster |
+| `PIMLICO_API_KEY` | **server only** | Pimlico bundler + paymaster (proxied via `/api/pimlico`) |
 | `ALCHEMY_API_KEY` | **server only** | Balances, prices & activity (via `app/api/*`) |
 
-> `.env.local` is git-ignored. `NEXT_PUBLIC_*` keys ship to the browser —
-> restrict each by domain in its provider dashboard. The Alchemy key is kept
-> **server-side** (only the Next.js API routes use it) so it never reaches the
-> client.
+> `.env.local` is git-ignored. Only the `NEXT_PUBLIC_*` Privy IDs ship to the
+> browser (they're public by design) — restrict them by domain in the Privy
+> dashboard. The **Pimlico** and **Alchemy** keys are **server-side only**
+> (used behind `app/api/*` routes) so they never reach the client.
 
 ### Scripts
 
