@@ -8,6 +8,7 @@ import { useSwapQuote } from "@/hooks/use-swap-quote";
 import { useSmartAccount } from "@/hooks/use-smart-account";
 import { getRawQuote, executeSwap } from "@/lib/relay/execute";
 import { hasPimlicoKey } from "@/lib/aa/pimlico";
+import { TokenSelect } from "@/components/token-select";
 import { TxModal, type TxState } from "@/features/tx/tx-modal";
 import {
   SWAP_CHAINS,
@@ -186,7 +187,7 @@ export function SwapScreen() {
               setFromSymbol(tokensForChain(v)[0].symbol);
             }}
           />
-          <span className="pb-2 text-[15px] text-[#a1a1aa]">→</span>
+          <span className="pb-2 text-[15px] text-fg-subtle">→</span>
           <NetworkSelect
             label="To network"
             value={toChainId}
@@ -206,10 +207,10 @@ export function SwapScreen() {
           </div>
         )}
 
-        <div className="rounded-2xl border border-[#ebebe8] bg-white p-4">
+        <div className="rounded-2xl border border-border bg-surface p-4">
           {/* From */}
-          <div className="rounded-xl border border-[#eee] bg-[#f6f6f4] p-[14px]">
-            <div className="mb-2 flex justify-between text-xs text-[#71717a]">
+          <div className="rounded-xl border border-divider bg-surface-inset p-[14px]">
+            <div className="mb-2 flex justify-between text-xs text-fg-muted">
               <span className="font-semibold">From</span>
               <span>
                 Balance {formatTokenAmount(fromBalance)} ·{" "}
@@ -235,7 +236,7 @@ export function SwapScreen() {
                 onChange={setFromSymbol}
               />
             </div>
-            <div className="mt-1 text-xs text-[#a1a1aa]">
+            <div className="mt-1 text-xs text-fg-subtle">
               {q?.inUsd != null ? `≈ ${formatUsd(q.inUsd)}` : "$0.00"}
             </div>
           </div>
@@ -244,33 +245,33 @@ export function SwapScreen() {
           <div className="relative z-[2] -my-[9px] flex justify-center">
             <button
               onClick={flip}
-              className="size-[34px] rounded-[9px] border border-[#e4e4e7] bg-white text-[15px] text-[#71717a] shadow-[0_1px_2px_rgba(0,0,0,0.05)] hover:border-brand hover:text-brand"
+              className="size-[34px] rounded-[9px] border border-input bg-surface text-[15px] text-fg-muted shadow-[0_1px_2px_rgba(0,0,0,0.05)] hover:border-brand hover:text-brand"
             >
               ⇅
             </button>
           </div>
 
           {/* To */}
-          <div className="rounded-xl border border-[#eee] bg-[#f6f6f4] p-[14px]">
-            <div className="mb-2 flex justify-between text-xs text-[#71717a]">
+          <div className="rounded-xl border border-divider bg-surface-inset p-[14px]">
+            <div className="mb-2 flex justify-between text-xs text-fg-muted">
               <span className="font-semibold">To (estimated)</span>
               <span>
                 Balance {formatTokenAmount(balanceFor(portfolio, toChainId, toToken))}
               </span>
             </div>
             <div className="flex items-center gap-2.5">
-              <div className="min-w-0 flex-1 font-mono text-[26px] font-semibold text-[#52525b]">
+              <div className="min-w-0 flex-1 font-mono text-[26px] font-semibold text-fg-2">
                 {estStr}
               </div>
               <TokenSelect chainId={toChainId} value={toSymbol} onChange={setToSymbol} />
             </div>
-            <div className="mt-1 text-xs text-[#a1a1aa]">
+            <div className="mt-1 text-xs text-fg-subtle">
               {q?.outUsd != null ? `≈ ${formatUsd(q.outUsd)}` : "$0.00"}
             </div>
           </div>
 
           {/* Details */}
-          <div className="mt-[14px] rounded-xl border border-[#f0f0ed] px-[14px] py-3 text-[12.5px] text-[#52525b]">
+          <div className="mt-[14px] rounded-xl border border-divider px-[14px] py-3 text-[12.5px] text-fg-2">
             <Row label="Rate">
               <span className="font-mono">{rateStr}</span>
             </Row>
@@ -287,7 +288,7 @@ export function SwapScreen() {
           <button
             onClick={onSwap}
             disabled={disabled}
-            className="mt-4 w-full rounded-[11px] py-[14px] text-[15px] font-semibold text-white disabled:cursor-not-allowed disabled:bg-[#e4e4e7] disabled:text-[#a1a1aa] enabled:bg-brand enabled:hover:bg-brand-hover"
+            className="mt-4 w-full rounded-[11px] py-[14px] text-[15px] font-semibold text-white disabled:cursor-not-allowed disabled:bg-disabled disabled:text-fg-subtle enabled:bg-brand enabled:hover:bg-brand-hover"
           >
             {btnLabel}
           </button>
@@ -297,7 +298,7 @@ export function SwapScreen() {
               Couldn&apos;t fetch a quote for this pair.
             </p>
           )}
-          {note && <p className="mt-2 text-center text-xs text-[#71717a]">{note}</p>}
+          {note && <p className="mt-2 text-center text-xs text-fg-muted">{note}</p>}
         </div>
       </div>
 
@@ -316,8 +317,8 @@ function NetworkSelect({
   onChange: (v: number) => void;
 }) {
   return (
-    <div className="flex-1 rounded-[11px] border border-[#ebebe8] bg-white px-[11px] py-2">
-      <div className="mb-[3px] text-[10px] font-semibold uppercase tracking-[0.4px] text-[#a1a1aa]">
+    <div className="flex-1 rounded-[11px] border border-border bg-surface px-[11px] py-2">
+      <div className="mb-[3px] text-[10px] font-semibold uppercase tracking-[0.4px] text-fg-subtle">
         {label}
       </div>
       <select
@@ -335,34 +336,10 @@ function NetworkSelect({
   );
 }
 
-function TokenSelect({
-  chainId,
-  value,
-  onChange,
-}: {
-  chainId: number;
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="cursor-pointer rounded-[10px] border border-[#e4e4e7] bg-white px-2.5 py-2 text-sm font-semibold outline-none"
-    >
-      {tokensForChain(chainId).map((t) => (
-        <option key={t.symbol} value={t.symbol}>
-          {t.symbol}
-        </option>
-      ))}
-    </select>
-  );
-}
-
 function Row({ label, children }: { label: string; children: React.ReactNode }) {
   return (
     <div className="flex items-center justify-between py-[3px]">
-      <span className="text-[#a1a1aa]">{label}</span>
+      <span className="text-fg-subtle">{label}</span>
       {children}
     </div>
   );

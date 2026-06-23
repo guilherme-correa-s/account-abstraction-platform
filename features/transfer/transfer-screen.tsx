@@ -8,6 +8,7 @@ import { usePortfolio } from "@/hooks/use-portfolio";
 import { useSmartAccount } from "@/hooks/use-smart-account";
 import { executeTransfer } from "@/lib/aa/transfer";
 import { hasPimlicoKey } from "@/lib/aa/pimlico";
+import { TokenSelect } from "@/components/token-select";
 import { TxModal, type TxState } from "@/features/tx/tx-modal";
 import {
   SWAP_CHAINS,
@@ -67,10 +68,10 @@ export function TransferScreen() {
 
   const recipientHint =
     to === ""
-      ? { text: "Enter a valid 0x address", color: "#a1a1aa" }
+      ? { text: "Enter a valid 0x address", color: "var(--fg-subtle)" }
       : recipientOk
-        ? { text: "✓ Valid address", color: "#16a34a" }
-        : { text: "Invalid address", color: "#dc2626" };
+        ? { text: "✓ Valid address", color: "var(--success)" }
+        : { text: "Invalid address", color: "var(--danger)" };
 
   const btnLabel = insufficient
     ? "Insufficient balance"
@@ -136,9 +137,9 @@ export function TransferScreen() {
       <div className="mx-auto max-w-[460px] animate-fade-up">
         <h2 className="mb-4 text-[19px] font-bold tracking-[-0.4px]">Transfer</h2>
 
-        <div className="rounded-2xl border border-[#ebebe8] bg-white p-[18px]">
+        <div className="rounded-2xl border border-border bg-surface p-[18px]">
           {/* Network */}
-          <label className="text-[12.5px] font-semibold text-[#52525b]">Network</label>
+          <label className="text-[12.5px] font-semibold text-fg-2">Network</label>
           <select
             value={chainId}
             onChange={(e) => {
@@ -146,7 +147,7 @@ export function TransferScreen() {
               setChainId(v);
               setSymbol(tokensForChain(v)[0].symbol);
             }}
-            className="mb-[14px] mt-[7px] w-full cursor-pointer rounded-[10px] border border-[#e4e4e7] bg-white px-3 py-[11px] text-sm font-semibold outline-none"
+            className="mb-[14px] mt-[7px] w-full cursor-pointer rounded-[10px] border border-input bg-surface px-3 py-[11px] text-sm font-semibold outline-none"
           >
             {SWAP_CHAINS.map((c) => (
               <option key={c.id} value={c.id}>
@@ -156,37 +157,29 @@ export function TransferScreen() {
           </select>
 
           {/* Asset */}
-          <label className="text-[12.5px] font-semibold text-[#52525b]">Asset</label>
-          <select
-            value={symbol}
-            onChange={(e) => setSymbol(e.target.value)}
-            className="mb-[14px] mt-[7px] w-full cursor-pointer rounded-[10px] border border-[#e4e4e7] bg-white px-3 py-[11px] text-sm font-semibold outline-none"
-          >
-            {tokensForChain(chainId).map((t) => (
-              <option key={t.symbol} value={t.symbol}>
-                {t.symbol} · {t.name}
-              </option>
-            ))}
-          </select>
+          <label className="text-[12.5px] font-semibold text-fg-2">Asset</label>
+          <div className="mb-[14px] mt-[7px]">
+            <TokenSelect chainId={chainId} value={symbol} onChange={setSymbol} wide />
+          </div>
 
           {/* Recipient */}
-          <label className="text-[12.5px] font-semibold text-[#52525b]">
+          <label className="text-[12.5px] font-semibold text-fg-2">
             Recipient address
           </label>
           <input
             value={to}
             onChange={(e) => setTo(e.target.value.trim())}
             placeholder="0x..."
-            className="mb-1 mt-[7px] w-full rounded-[10px] border border-input bg-[#fcfcfb] px-[14px] py-3 font-mono text-[13.5px] outline-none focus:border-brand focus:bg-white focus:ring-[3px] focus:ring-brand/15"
+            className="mb-1 mt-[7px] w-full rounded-[10px] border border-input bg-surface-input px-[14px] py-3 font-mono text-[13.5px] outline-none focus:border-brand focus:bg-surface focus:ring-[3px] focus:ring-brand/15"
           />
           <div className="mb-[14px] text-[11.5px]" style={{ color: recipientHint.color }}>
             {recipientHint.text}
           </div>
 
           {/* Amount */}
-          <div className="mb-1.5 flex justify-between text-[12.5px] text-[#52525b]">
+          <div className="mb-1.5 flex justify-between text-[12.5px] text-fg-2">
             <label className="font-semibold">Amount</label>
-            <span className="text-[#71717a]">
+            <span className="text-fg-muted">
               Balance {formatTokenAmount(balance)} ·{" "}
               <button
                 onClick={() => setAmount(String(balance))}
@@ -196,7 +189,7 @@ export function TransferScreen() {
               </button>
             </span>
           </div>
-          <div className="flex items-center gap-2.5 rounded-xl border border-[#eee] bg-[#f6f6f4] px-[14px] py-3">
+          <div className="flex items-center gap-2.5 rounded-xl border border-divider bg-surface-inset px-[14px] py-3">
             <input
               value={amount}
               onChange={(e) => setAmount(e.target.value.replace(/[^0-9.]/g, ""))}
@@ -204,17 +197,17 @@ export function TransferScreen() {
               placeholder="0.00"
               className="min-w-0 flex-1 bg-transparent font-mono text-[22px] font-semibold outline-none"
             />
-            <span className="text-sm font-semibold text-[#52525b]">{token.symbol}</span>
+            <span className="text-sm font-semibold text-fg-2">{token.symbol}</span>
           </div>
-          <div className="mt-[5px] text-xs text-[#a1a1aa]">
+          <div className="mt-[5px] text-xs text-fg-subtle">
             {price != null && amountNum > 0
               ? `≈ ${formatUsd(amountNum * price)}`
               : "$0.00"}
           </div>
 
           {/* Network fee */}
-          <div className="mt-[14px] flex items-center justify-between rounded-xl border border-[#f0f0ed] px-[14px] py-[11px] text-[12.5px]">
-            <span className="text-[#a1a1aa]">Network fee</span>
+          <div className="mt-[14px] flex items-center justify-between rounded-xl border border-divider px-[14px] py-[11px] text-[12.5px]">
+            <span className="text-fg-subtle">Network fee</span>
             <span className="inline-flex items-center gap-1.5 rounded-[7px] border border-success-border bg-success-bg px-2 py-0.5 text-[11.5px] font-semibold text-success-foreground">
               ✓ Sponsored · Paymaster
             </span>
@@ -223,12 +216,12 @@ export function TransferScreen() {
           <button
             onClick={onSend}
             disabled={disabled}
-            className="mt-4 w-full rounded-[11px] py-[14px] text-[15px] font-semibold text-white disabled:cursor-not-allowed disabled:bg-[#e4e4e7] disabled:text-[#a1a1aa] enabled:bg-brand enabled:hover:bg-brand-hover"
+            className="mt-4 w-full rounded-[11px] py-[14px] text-[15px] font-semibold text-white disabled:cursor-not-allowed disabled:bg-disabled disabled:text-fg-subtle enabled:bg-brand enabled:hover:bg-brand-hover"
           >
             {btnLabel}
           </button>
 
-          {note && <p className="mt-2 text-center text-xs text-[#71717a]">{note}</p>}
+          {note && <p className="mt-2 text-center text-xs text-fg-muted">{note}</p>}
         </div>
       </div>
 

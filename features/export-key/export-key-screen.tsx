@@ -38,7 +38,7 @@ export function ExportKeyScreen() {
       <h2 className="mb-1 text-[19px] font-bold tracking-[-0.4px]">
         Export private key
       </h2>
-      <p className="mb-4 text-[13.5px] text-[#71717a]">
+      <p className="mb-4 text-[13.5px] text-fg-muted">
         Export the key of your embedded signer (EOA) that controls this smart
         account.
       </p>
@@ -52,25 +52,25 @@ export function ExportKeyScreen() {
         </div>
       </div>
 
-      <div className="rounded-[14px] border border-[#ebebe8] bg-white p-[18px]">
-        <div className="mb-[9px] text-xs font-semibold uppercase tracking-[0.4px] text-[#71717a]">
+      <div className="rounded-[14px] border border-border bg-surface p-[18px]">
+        <div className="mb-[9px] text-xs font-semibold uppercase tracking-[0.4px] text-fg-muted">
           Signer private key
         </div>
 
         {/* Dark box — placeholder; the real key opens in Privy's secure window */}
         <div className="flex min-h-[54px] items-center break-all rounded-[11px] bg-surface-dark px-4 py-[14px] font-mono text-[13px] leading-[1.7] text-[#e4e4e7]">
-          <span className="tracking-[2px] text-[#52525b]">{"•".repeat(48)}</span>
+          <span className="tracking-[2px] text-fg-2">{"•".repeat(48)}</span>
         </div>
 
         <button
           onClick={onExport}
           disabled={!address || busy}
-          className="mt-[14px] w-full rounded-[10px] bg-brand py-3 text-[13.5px] font-semibold text-white hover:bg-brand-hover disabled:cursor-not-allowed disabled:bg-[#e4e4e7] disabled:text-[#a1a1aa]"
+          className="mt-[14px] w-full rounded-[10px] bg-brand py-3 text-[13.5px] font-semibold text-white hover:bg-brand-hover disabled:cursor-not-allowed disabled:bg-disabled disabled:text-fg-subtle"
         >
           {busy ? "Opening secure window…" : "Export private key"}
         </button>
 
-        <p className="mt-2.5 text-center text-[11.5px] text-[#a1a1aa]">
+        <p className="mt-2.5 text-center text-[11.5px] text-fg-subtle">
           Opens Privy&apos;s secure window — your key never touches this app.
         </p>
 
@@ -78,7 +78,7 @@ export function ExportKeyScreen() {
           <p className="mt-2 text-center text-xs font-medium text-danger">{error}</p>
         )}
 
-        <div className="mt-3 font-mono text-[11.5px] text-[#a1a1aa]">
+        <div className="mt-3 font-mono text-[11.5px] text-fg-subtle">
           Signer EOA · {shortAddress(address)}
         </div>
       </div>

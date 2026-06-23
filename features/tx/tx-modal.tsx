@@ -31,9 +31,9 @@ export function TxModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-[rgba(24,24,27,0.45)] p-6 animate-overlay-in">
-      <div className="w-full max-w-[400px] rounded-[18px] bg-white p-[22px] shadow-[0_24px_60px_rgba(0,0,0,0.25)] animate-pop">
+      <div className="w-full max-w-[400px] rounded-[18px] bg-surface p-[22px] shadow-[0_24px_60px_rgba(0,0,0,0.25)] animate-pop">
         <div className="text-[16px] font-bold tracking-[-0.3px]">{tx.title}</div>
-        <div className="mb-[18px] mt-1 font-mono text-[12.5px] text-[#a1a1aa]">
+        <div className="mb-[18px] mt-1 font-mono text-[12.5px] text-fg-subtle">
           {tx.hash ? shortAddress(tx.hash) : "Preparing…"}
         </div>
 
@@ -51,11 +51,17 @@ export function TxModal({
                   ) : active ? (
                     <span className="size-6 animate-spin rounded-full border-[3px] border-brand-soft border-t-brand" />
                   ) : (
-                    <span className="size-6 rounded-full border-2 border-[#e4e4e7]" />
+                    <span className="size-6 rounded-full border-2 border-input" />
                   )}
                   <span
                     className="text-[13.5px] font-medium"
-                    style={{ color: done ? "#16a34a" : active ? "#18181b" : "#a1a1aa" }}
+                    style={{
+                      color: done
+                        ? "var(--success)"
+                        : active
+                          ? "var(--fg)"
+                          : "var(--fg-subtle)",
+                    }}
                   >
                     {label}
                   </span>
@@ -72,17 +78,17 @@ export function TxModal({
                 ✓
               </span>
               <div className="mt-3 text-[16px] font-bold">Transaction confirmed</div>
-              <div className="mt-0.5 text-[12.5px] text-[#a1a1aa]">
+              <div className="mt-0.5 text-[12.5px] text-fg-subtle">
                 Included on {tx.network}
               </div>
             </div>
-            <div className="rounded-[11px] border border-[#eee] bg-[#f8f8f6] px-[14px] py-3">
+            <div className="rounded-[11px] border border-divider bg-surface-inset px-[14px] py-3">
               {tx.summary.map((line, i) => (
                 <div
                   key={i}
-                  className="flex items-center gap-2 py-[3px] text-[12.5px] text-[#52525b]"
+                  className="flex items-center gap-2 py-[3px] text-[12.5px] text-fg-2"
                 >
-                  <span className="text-success">✓</span>
+                  <span className="text-success-foreground">✓</span>
                   {line}
                 </div>
               ))}
@@ -103,7 +109,7 @@ export function TxModal({
                 ✕
               </span>
               <div className="mt-3 text-[16px] font-bold">Transaction failed</div>
-              <div className="mt-0.5 text-[12.5px] text-[#a1a1aa]">
+              <div className="mt-0.5 text-[12.5px] text-fg-subtle">
                 Reverted at · {steps[tx.step] ?? steps[steps.length - 1]}
               </div>
             </div>
@@ -117,7 +123,7 @@ export function TxModal({
             <div className="mt-4 flex gap-[9px]">
               <button
                 onClick={onClose}
-                className="flex-1 rounded-[10px] border border-[#e4e4e7] bg-white py-3 text-[14px] font-semibold text-[#27272a] hover:bg-[#fafafa]"
+                className="flex-1 rounded-[10px] border border-input bg-surface py-3 text-[14px] font-semibold text-fg hover:bg-surface-2"
               >
                 Dismiss
               </button>

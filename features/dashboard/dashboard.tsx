@@ -31,9 +31,9 @@ const ACTIVITY_ICON: Record<
   ActivityKind,
   { char: string; bg: string; color: string }
 > = {
-  receive: { char: "↓", bg: "#e8f6ed", color: "#16a34a" },
-  send: { char: "↑", bg: "#fdeaea", color: "#dc2626" },
-  swap: { char: "⇄", bg: "#ece9f9", color: "#6E56CF" },
+  receive: { char: "↓", bg: "var(--success-bg)", color: "var(--success-foreground)" },
+  send: { char: "↑", bg: "var(--danger-bg)", color: "var(--danger-foreground)" },
+  swap: { char: "⇄", bg: "var(--brand-soft)", color: "var(--brand-fg)" },
 };
 
 export function Dashboard({ onNavigate }: { onNavigate?: (tab: Tab) => void }) {
@@ -81,8 +81,8 @@ export function Dashboard({ onNavigate }: { onNavigate?: (tab: Tab) => void }) {
       {/* Assets + Activity */}
       <div className="mt-4 grid gap-4 [grid-template-columns:repeat(auto-fit,minmax(290px,1fr))]">
         {/* Assets */}
-        <section className="overflow-hidden rounded-[14px] border border-[#ebebe8] bg-white">
-          <div className="border-b border-[#f2f2ef] px-[18px] py-[15px] text-sm font-semibold">
+        <section className="overflow-hidden rounded-[14px] border border-border bg-surface">
+          <div className="border-b border-divider px-[18px] py-[15px] text-sm font-semibold">
             Assets
           </div>
           <div>
@@ -100,8 +100,8 @@ export function Dashboard({ onNavigate }: { onNavigate?: (tab: Tab) => void }) {
         </section>
 
         {/* Activity */}
-        <section className="overflow-hidden rounded-[14px] border border-[#ebebe8] bg-white">
-          <div className="border-b border-[#f2f2ef] px-[18px] py-[15px] text-sm font-semibold">
+        <section className="overflow-hidden rounded-[14px] border border-border bg-surface">
+          <div className="border-b border-divider px-[18px] py-[15px] text-sm font-semibold">
             Activity
           </div>
           <div>
@@ -132,7 +132,7 @@ function TokenAvatar({ symbol, logo }: { symbol: string; logo: string | null }) 
         alt=""
         loading="lazy"
         onError={() => setOk(false)}
-        className="size-[34px] shrink-0 rounded-full bg-white object-cover"
+        className="size-[34px] shrink-0 rounded-full bg-surface object-cover"
       />
     );
   }
@@ -148,11 +148,11 @@ function TokenAvatar({ symbol, logo }: { symbol: string; logo: string | null }) 
 
 function AssetRow({ h }: { h: Holding }) {
   return (
-    <div className="flex items-center gap-3 border-b border-[#f6f6f4] px-[18px] py-[13px]">
+    <div className="flex items-center gap-3 border-b border-divider px-[18px] py-[13px]">
       <TokenAvatar symbol={h.symbol} logo={h.logo} />
       <div className="min-w-0 leading-[1.25]">
         <div className="text-sm font-semibold">{h.symbol}</div>
-        <div className="truncate text-xs text-[#a1a1aa]">
+        <div className="truncate text-xs text-fg-subtle">
           {h.name} · {h.networkLabel}
         </div>
       </div>
@@ -160,7 +160,7 @@ function AssetRow({ h }: { h: Holding }) {
         <div className="font-mono text-sm font-semibold">
           {formatTokenAmount(h.balance)} {h.symbol}
         </div>
-        <div className="text-xs text-[#a1a1aa]">{formatUsd(h.valueUsd)}</div>
+        <div className="text-xs text-fg-subtle">{formatUsd(h.valueUsd)}</div>
       </div>
     </div>
   );
@@ -169,7 +169,7 @@ function AssetRow({ h }: { h: Holding }) {
 function ActivityRow({ a }: { a: ActivityItem }) {
   const icon = ACTIVITY_ICON[a.kind];
   const base =
-    "flex items-center gap-3 border-b border-[#f6f6f4] px-[18px] py-[13px]";
+    "flex items-center gap-3 border-b border-divider px-[18px] py-[13px]";
 
   const inner = (
     <>
@@ -181,18 +181,20 @@ function ActivityRow({ a }: { a: ActivityItem }) {
       </span>
       <div className="min-w-0 leading-[1.25]">
         <div className="truncate text-[13.5px] font-semibold">{a.title}</div>
-        <div className="font-mono text-[11.5px] text-[#a1a1aa]">
+        <div className="font-mono text-[11.5px] text-fg-subtle">
           {shortAddress(a.hash)} · {relativeTime(a.timestamp)} · {a.networkLabel}
         </div>
       </div>
       <div className="ml-auto text-right leading-[1.3]">
         <div
           className="font-mono text-[13.5px] font-semibold"
-          style={{ color: a.positive ? "#16a34a" : "#18181b" }}
+          style={{ color: a.positive ? "var(--success-foreground)" : "var(--fg)" }}
         >
           {a.amount}
         </div>
-        <div className="text-[11px] font-semibold text-success">Confirmed</div>
+        <div className="text-[11px] font-semibold text-success-foreground">
+          Confirmed
+        </div>
       </div>
     </>
   );
@@ -204,7 +206,7 @@ function ActivityRow({ a }: { a: ActivityItem }) {
         target="_blank"
         rel="noopener noreferrer"
         title="View on explorer"
-        className={`${base} transition-colors hover:bg-[#fafafa]`}
+        className={`${base} transition-colors hover:bg-surface-2`}
       >
         {inner}
       </a>
@@ -215,7 +217,7 @@ function ActivityRow({ a }: { a: ActivityItem }) {
 
 function Empty({ text }: { text: string }) {
   return (
-    <div className="px-[18px] py-10 text-center text-[13px] text-[#a1a1aa]">
+    <div className="px-[18px] py-10 text-center text-[13px] text-fg-subtle">
       {text}
     </div>
   );
@@ -227,16 +229,16 @@ function RowSkeletons() {
       {[0, 1, 2].map((i) => (
         <div
           key={i}
-          className="flex items-center gap-3 border-b border-[#f6f6f4] px-[18px] py-[13px]"
+          className="flex items-center gap-3 border-b border-divider px-[18px] py-[13px]"
         >
-          <span className="size-[34px] animate-pulse rounded-full bg-[#f0f0ee]" />
+          <span className="size-[34px] animate-pulse rounded-full bg-surface-skeleton" />
           <div className="space-y-1.5">
-            <div className="h-3 w-16 animate-pulse rounded bg-[#f0f0ee]" />
-            <div className="h-2.5 w-24 animate-pulse rounded bg-[#f4f4f2]" />
+            <div className="h-3 w-16 animate-pulse rounded bg-surface-skeleton" />
+            <div className="h-2.5 w-24 animate-pulse rounded bg-surface-skeleton" />
           </div>
           <div className="ml-auto space-y-1.5 text-right">
-            <div className="h-3 w-20 animate-pulse rounded bg-[#f0f0ee]" />
-            <div className="ml-auto h-2.5 w-12 animate-pulse rounded bg-[#f4f4f2]" />
+            <div className="h-3 w-20 animate-pulse rounded bg-surface-skeleton" />
+            <div className="ml-auto h-2.5 w-12 animate-pulse rounded bg-surface-skeleton" />
           </div>
         </div>
       ))}

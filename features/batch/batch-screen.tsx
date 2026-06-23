@@ -18,6 +18,7 @@ import {
 } from "@/config/tokens";
 import type { Portfolio } from "@/lib/alchemy/portfolio";
 import { formatTokenAmount } from "@/lib/format";
+import { TokenSelect } from "@/components/token-select";
 
 type Row = { from: string; to: string; amount: string };
 
@@ -179,15 +180,15 @@ export function BatchScreen() {
         <h2 className="mb-1 text-[19px] font-bold tracking-[-0.4px]">
           Batch transactions
         </h2>
-        <p className="mb-4 text-[13.5px] text-[#71717a]">
+        <p className="mb-4 text-[13.5px] text-fg-muted">
           Bundle multiple actions into a single{" "}
-          <span className="font-mono text-[#52525b]">UserOperation</span> — one
+          <span className="font-mono text-fg-2">UserOperation</span> — one
           signature, atomic execution.
         </p>
 
-        <div className="rounded-2xl border border-[#ebebe8] bg-white p-[18px]">
+        <div className="rounded-2xl border border-border bg-surface p-[18px]">
           {/* Network (atomic batching is same-chain only) */}
-          <div className="mb-3 flex items-center justify-end gap-2 text-[12.5px] text-[#52525b]">
+          <div className="mb-3 flex items-center justify-end gap-2 text-[12.5px] text-fg-2">
             <span>Network</span>
             <select
               value={chainId}
@@ -196,7 +197,7 @@ export function BatchScreen() {
                 setChainId(v);
                 setRows(defaultRows(v));
               }}
-              className="cursor-pointer rounded-[8px] border border-[#e4e4e7] bg-white px-2.5 py-1.5 text-[13px] font-semibold outline-none"
+              className="cursor-pointer rounded-[8px] border border-input bg-surface px-2.5 py-1.5 text-[13px] font-semibold outline-none"
             >
               {SWAP_CHAINS.map((c) => (
                 <option key={c.id} value={c.id}>
@@ -208,7 +209,7 @@ export function BatchScreen() {
 
           {rows.map((r, i) => (
             <div key={i}>
-              {i === 1 && <div className="my-4 h-px bg-[#f2f2ef]" />}
+              {i === 1 && <div className="my-4 h-px bg-divider" />}
               <BatchRow
                 index={i}
                 row={r}
@@ -221,12 +222,12 @@ export function BatchScreen() {
           ))}
 
           {/* Info panel */}
-          <div className="mt-[18px] flex items-center gap-3 rounded-xl border border-[#e7e1f8] bg-[#f7f5fd] px-[15px] py-[13px]">
+          <div className="mt-[18px] flex items-center gap-3 rounded-xl border border-brand-panel bg-brand-panel px-[15px] py-[13px]">
             <span className="flex size-[30px] items-center justify-center rounded-lg bg-brand text-sm text-white">
               ⚡
             </span>
-            <div className="text-[12.5px] leading-[1.4] text-[#52525b]">
-              <b className="text-[#27272a]">2 actions · 1 signature.</b> Executed
+            <div className="text-[12.5px] leading-[1.4] text-fg-2">
+              <b className="text-fg">2 actions · 1 signature.</b> Executed
               atomically in one transaction; gas sponsored by paymaster.
             </div>
           </div>
@@ -234,12 +235,12 @@ export function BatchScreen() {
           <button
             onClick={onExecute}
             disabled={!valid}
-            className="mt-4 w-full rounded-[11px] py-[14px] text-[15px] font-semibold text-white disabled:cursor-not-allowed disabled:bg-[#e4e4e7] disabled:text-[#a1a1aa] enabled:bg-brand enabled:hover:bg-brand-hover"
+            className="mt-4 w-full rounded-[11px] py-[14px] text-[15px] font-semibold text-white disabled:cursor-not-allowed disabled:bg-disabled disabled:text-fg-subtle enabled:bg-brand enabled:hover:bg-brand-hover"
           >
             {valid ? "Execute batch · 1 signature" : "Enter both swaps"}
           </button>
 
-          {note && <p className="mt-2 text-center text-xs text-[#71717a]">{note}</p>}
+          {note && <p className="mt-2 text-center text-xs text-fg-muted">{note}</p>}
         </div>
       </div>
 
@@ -278,7 +279,7 @@ function BatchRow({
         <span className="text-[13.5px] font-semibold">Swap</span>
       </div>
       <div className="flex items-center gap-2.5">
-        <div className="flex flex-1 items-center gap-2 rounded-[11px] border border-[#eee] bg-[#f6f6f4] px-[11px] py-[9px]">
+        <div className="flex flex-1 items-center gap-2 rounded-[11px] border border-divider bg-surface-inset px-[11px] py-[9px]">
           <input
             value={row.amount}
             onChange={(e) => onChange({ amount: e.target.value.replace(/[^0-9.]/g, "") })}
@@ -286,42 +287,18 @@ function BatchRow({
             placeholder="0.00"
             className="min-w-0 flex-1 bg-transparent font-mono text-base font-semibold outline-none"
           />
-          <TokenPicker
+          <TokenSelect
             chainId={chainId}
             value={row.from}
             onChange={(v) => onChange({ from: v })}
           />
         </div>
-        <span className="text-base text-[#a1a1aa]">→</span>
-        <TokenPicker chainId={chainId} value={row.to} onChange={(v) => onChange({ to: v })} />
+        <span className="text-base text-fg-subtle">→</span>
+        <TokenSelect chainId={chainId} value={row.to} onChange={(v) => onChange({ to: v })} />
       </div>
-      <div className="mb-0.5 mt-1.5 text-xs text-[#a1a1aa]">
+      <div className="mb-0.5 mt-1.5 text-xs text-fg-subtle">
         Est. receive ~{est} {row.to} · Balance {formatTokenAmount(balance)} {row.from}
       </div>
     </div>
-  );
-}
-
-function TokenPicker({
-  chainId,
-  value,
-  onChange,
-}: {
-  chainId: number;
-  value: string;
-  onChange: (v: string) => void;
-}) {
-  return (
-    <select
-      value={value}
-      onChange={(e) => onChange(e.target.value)}
-      className="cursor-pointer rounded-lg border border-[#e4e4e7] bg-white px-2 py-1.5 text-[13px] font-semibold outline-none"
-    >
-      {tokensForChain(chainId).map((t) => (
-        <option key={t.symbol} value={t.symbol}>
-          {t.symbol}
-        </option>
-      ))}
-    </select>
   );
 }

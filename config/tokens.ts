@@ -45,3 +45,15 @@ export function findToken(chainId: number, symbol: string): SwapToken {
   const list = tokensForChain(chainId);
   return list.find((t) => t.symbol === symbol) ?? list[0];
 }
+
+const TRUST_CHAIN: Record<number, string> = { 137: "polygon", 8453: "base" };
+
+// Token logo via the Trust Wallet icon CDN (UI falls back to a letter avatar).
+export function tokenLogoUrl(chainId: number, token: SwapToken): string | null {
+  const chain = TRUST_CHAIN[chainId];
+  if (!chain) return null;
+  const base = `https://raw.githubusercontent.com/trustwallet/assets/master/blockchains/${chain}`;
+  return token.native
+    ? `${base}/info/logo.png`
+    : `${base}/assets/${token.address}/logo.png`;
+}
