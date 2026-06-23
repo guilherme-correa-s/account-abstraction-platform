@@ -2,8 +2,7 @@
 
 import { usePrivy } from "@privy-io/react-auth";
 import { LoginScreen } from "@/features/login/login-screen";
-import { Header } from "@/features/app-shell/header";
-import { Dashboard } from "@/features/dashboard/dashboard";
+import { AppShell } from "@/features/app-shell/app-shell";
 
 export default function Home() {
   const { ready, authenticated } = usePrivy();
@@ -19,12 +18,5 @@ export default function Home() {
 
   if (!authenticated) return <LoginScreen />;
 
-  return (
-    <>
-      <Header />
-      <main className="mx-auto max-w-[1040px] px-5 pb-[72px] pt-6">
-        <Dashboard />
-      </main>
-    </>
-  );
+  return <AppShell />;
 }

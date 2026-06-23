@@ -7,7 +7,7 @@ const web3Packages = [
   "@zerodev/ecdsa-validator",
   "permissionless",
   "viem",
-  "@reservoir0x/relay-sdk",
+  "@relayprotocol/relay-sdk",
 ];
 
 // Next 16 runs Turbopack by default (`process.env.TURBOPACK` is set), and the
