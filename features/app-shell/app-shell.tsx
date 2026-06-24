@@ -7,9 +7,13 @@ import { SwapScreen } from "@/features/swap/swap-screen";
 import { TransferScreen } from "@/features/transfer/transfer-screen";
 import { BatchScreen } from "@/features/batch/batch-screen";
 import { ExportKeyScreen } from "@/features/export-key/export-key-screen";
+import { useEnsureWallet } from "@/hooks/use-ensure-wallet";
 
 export function AppShell() {
   const [tab, setTab] = useState<Tab>("Dashboard");
+
+  // Provision the embedded wallet if login didn't create one (see useEnsureWallet).
+  useEnsureWallet();
 
   return (
     <>
