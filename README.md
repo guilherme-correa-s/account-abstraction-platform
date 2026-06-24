@@ -154,8 +154,23 @@ sequenceDiagram
   UserOperation — we don't use an ERC-20 paymaster, so nothing is approved to it.
 - **Key export** happens entirely inside **Privy's secure iframe**; the app
   never reads or stores raw private-key material.
-- Secrets live only in `.env.local` (git-ignored). The Alchemy key stays
-  server-side.
+- Secrets live only in `.env.local` (git-ignored). The **Alchemy** and
+  **Pimlico** keys stay server-side (used only behind `app/api/*`); only the
+  Privy App/Client **IDs** reach the browser — and those are public by design
+  (identifiers, not secrets).
+
+### Deploy checklist
+
+- [ ] **Privy → Allowed origins**: lock to your real domain(s) only. The App ID /
+      Client ID are public (they ship to the browser), so origin allowlisting is
+      what stops a cloned / phishing page from using them.
+- [ ] **Keep keys server-side**: never add `NEXT_PUBLIC_` to `ALCHEMY_API_KEY` or
+      `PIMLICO_API_KEY`.
+- [ ] **Pimlico**: gas is sponsored from your Pimlico balance — set a
+      sponsorship-policy spend limit. The `/api/pimlico` proxy is same-origin
+      intended but open; auth-gate it (verify the Privy session) for production.
+- [ ] **No leaked secrets**: confirm none in tracked files, git history, or the
+      client bundle before deploying.
 
 ---
 
